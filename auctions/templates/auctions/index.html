@@ -1,0 +1,66 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+<h2 class="text-white">Active Listings</h2>
+    <div class="row"> 
+        {% for listing in listings %}
+        <div class="col-sm-6">
+            <div class="card text-center" style='width: 1200px;'>
+                <a href="{% url 'listing_detail' listing.id %}"><img class="card-img-top" src="{{ listing.picture.url }}" alt="None" ></a>
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>
+                        {% if listing.seller == request.user %}
+                        <li class="nav-item">
+                            <form action="{% url 'close_listing' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="listing_id" value={{listing.id}}>
+                                <input type="hidden" name="page" value="index">
+                                <input class="nav-link active btn btn-danger" type="submit" value="Close">
+                            </form>
+                        </li>
+                        {% endif %}
+                      </ul>
+                  </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ listing.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Seller: {{listing.seller}}</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ listing.description }}</li>
+                    <li class="list-group-item">Created: {{ listing.create_date }}</li>
+                    <li class="list-group-item">BIN Price: {{ listing.price_formatted }} <br>Current Bid: {{ listing.bid_formatted }}</li>
+                </ul>
+                <div class="card-body">
+                    {% if listing in user.watchlist.all %}
+                    <form action="{% url 'remove_from_watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listing_id" value={{listing.id}}>
+                        <input type="hidden" name="page" value="index">
+                        <input type="submit" value="Remove from Watchlist" class="btn btn-danger">
+                    </form>
+                    {% else %}
+                    <form action="{% url 'add_to_watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listing_id" value={{listing.id}}>
+                        <input type="hidden" name="page" value="index">
+                        <input type="submit" value="Add to Watchlist" class="btn btn-dark">
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                    {{listing.get_date}}
+                </div>
+            </div>
+            <br>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+<h2 class="text-white">Closed Listings</h2>
+    <div class="row"> 
+        {% for listing in listings %}
+        <div class="col-sm-6">
+            <div class="card text-center" style='width: 1200px;'>
+                <a href="{% url 'listing_detail' listing.id %}"><img class="card-img-top" src="{{ listing.picture.url }}" alt="None" ></a>
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>
+                      </ul>
+                  </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ listing.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Seller: {{listing.seller}}</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ listing.description }}</li>
+                    <li class="list-group-item">Created: {{ listing.create_date }}</li>
+                    <li class="list-group-item">Sold: {{ listing.sold_date }}</li>
+                    <li class="list-group-item">
+                        Listed for: {{ listing.price_formatted }} 
+                        <br> 
+                        Bought for: {{listing.get_winning_bid}}
+                        <br>
+                        Buyer: {{ listing.winner }}
+                    </li>
+                </ul>
+            </div>
+            <br>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
